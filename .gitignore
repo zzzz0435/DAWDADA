@@ -97,3 +97,7 @@ dist/
 build/
 *.min.js
 *.min.css
+
+# Claude Code
+.claude/
+.claude_code/
