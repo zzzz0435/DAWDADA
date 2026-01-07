@@ -1,0 +1,167 @@
+/**
+ * ============================================
+ * 個案管理系統（CMS）追蹤看板 - 樣式表
+ * ============================================
+ * 功能：
+ * - 響應式設計（RWD）
+ * - 專業醫療系統 UI 設計
+ * - 表單驗證視覺回饋
+ * - 動畫效果
+ * ============================================
+ */
+
+/* ============================================
+   基礎樣式
+   ============================================ */
+body {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* ============================================
+   導航列樣式
+   ============================================ */
+.navbar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* ============================================
+   統計卡片樣式
+   ============================================ */
+.stat-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    height: 100%;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+}
+
+/* ============================================
+   容器樣式
+   ============================================ */
+.table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+}
+
+.form-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+}
+
+/* ============================================
+   風險等級 Badge 樣式
+   ============================================ */
+.badge-high {
+    background-color: #dc3545;
+}
+
+.badge-medium {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.badge-low {
+    background-color: #28a745;
+}
+
+/* ============================================
+   待追蹤個案視覺強化樣式
+   ============================================ */
+.row-pending-followup {
+    background-color: #fff3cd; /* 淡黃色背景 */
+    border-left: 4px solid #ffc107; /* 左側黃色邊框強調 */
+}
+
+.row-pending-followup:hover {
+    background-color: #ffe69c; /* hover 時稍深的黃色 */
+}
+
+/* ============================================
+   表單驗證樣式
+   ============================================ */
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* ============================================
+   提示訊息樣式
+   ============================================ */
+.alert-fixed {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    z-index: 1050;
+    min-width: 300px;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ============================================
+   RWD 響應式設計 - 小螢幕 (≤576px)
+   ============================================ */
+@media (max-width: 576px) {
+    /* 統計卡片圖標縮小 */
+    .stat-icon {
+        font-size: 2rem;
+    }
+
+    .stat-card h2 {
+        font-size: 1.5rem;
+    }
+
+    /* 容器 padding 減少 */
+    .table-container {
+        padding: 1rem;
+    }
+
+    .form-container {
+        padding: 1rem;
+    }
+}
+
+/* ============================================
+   RWD 響應式設計 - 平板 (≤768px)
+   ============================================ */
+@media (max-width: 768px) {
+    /* 表格字體縮小 */
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+
+    /* 按鈕縮小 */
+    .btn-sm {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.75rem;
+    }
+}

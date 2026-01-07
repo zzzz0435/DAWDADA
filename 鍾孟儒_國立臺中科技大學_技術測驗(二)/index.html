@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>個案管理系統（CMS）追蹤看板</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 提示訊息容器 -->
+    <div id="alertContainer"></div>
+
+    <!-- 頂部導航 -->
+    <nav class="navbar navbar-dark mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+                <i class="bi bi-clipboard-data"></i> 個案管理系統（CMS）追蹤看板
+            </span>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4">
+        <!-- 統計卡片區 -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stat-icon text-primary me-3">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="card-subtitle mb-1 text-muted">總個案數</h6>
+                            <h2 class="card-title mb-0" id="totalCases">6</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stat-icon text-danger me-3">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="card-subtitle mb-1 text-muted">高風險個案</h6>
+                            <h2 class="card-title mb-0" id="highRiskCases">2</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stat-icon text-warning me-3">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                        <div>
+                            <h6 class="card-subtitle mb-1 text-muted">待追蹤人數</h6>
+                            <h2 class="card-title mb-0" id="pendingFollowUp">0</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 搜尋與篩選區 -->
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" id="searchName" placeholder="搜尋姓名或病歷號...">
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <select class="form-select" id="filterRisk">
+                    <option value="">🔍 全部風險等級</option>
+                    <option value="high">🔴 高風險</option>
+                    <option value="medium">🟡 中風險</option>
+                    <option value="low">🟢 低風險</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 個案列表 -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="table-container">
+                    <h5 class="mb-3"><i class="bi bi-list-ul"></i> 個案列表</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>姓名</th>
+                                    <th>病歷號</th>
+                                    <th>管理類別</th>
+                                    <th>風險等級</th>
+                                    <th>最近訪視日</th>
+                                    <th>初評摘要</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="caseTableBody">
+                                <tr>
+                                    <td>王小明</td>
+                                    <td>A123456</td>
+                                    <td>慢性病管理</td>
+                                    <td><span class="badge badge-high">高風險</span></td>
+                                    <td>2025-12-25</td>
+                                    <td>糖尿病併發症，需密集追蹤</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>李美華</td>
+                                    <td>B234567</td>
+                                    <td>復健追蹤</td>
+                                    <td><span class="badge badge-medium">中風險</span></td>
+                                    <td>2025-12-28</td>
+                                    <td>中風後復健，進展良好</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>張志偉</td>
+                                    <td>C345678</td>
+                                    <td>心理諮商</td>
+                                    <td><span class="badge badge-high">高風險</span></td>
+                                    <td>2025-12-20</td>
+                                    <td>憂鬱症追蹤，需加強關懷</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>陳淑芬</td>
+                                    <td>D456789</td>
+                                    <td>營養諮詢</td>
+                                    <td><span class="badge badge-low">低風險</span></td>
+                                    <td>2025-12-30</td>
+                                    <td>體重控制計畫，配合度佳</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>林俊傑</td>
+                                    <td>E567890</td>
+                                    <td>慢性病管理</td>
+                                    <td><span class="badge badge-medium">中風險</span></td>
+                                    <td>2025-12-22</td>
+                                    <td>高血壓控制中，血壓穩定</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>黃雅婷</td>
+                                    <td>F678901</td>
+                                    <td>用藥諮詢</td>
+                                    <td><span class="badge badge-low">低風險</span></td>
+                                    <td>2025-12-27</td>
+                                    <td>藥物調整後反應良好</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 新增個案表單 -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="form-container">
+                    <h5 class="mb-3"><i class="bi bi-plus-circle"></i> 新增個案</h5>
+                    <form id="addCaseForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="caseName" class="form-label">姓名 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="caseName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="caseId" class="form-label">病歷號 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="caseId" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="caseCategory" class="form-label">管理類別 <span class="text-danger">*</span></label>
+                                <select class="form-select" id="caseCategory" required>
+                                    <option value="">請選擇</option>
+                                    <option value="慢性病管理">慢性病管理</option>
+                                    <option value="傷口照護">傷口照護</option>
+                                    <option value="產後照護">產後照護</option>
+                                    <option value="custom">✏️ 自訂...</option>
+                                </select>
+                                <input type="text" class="form-control mt-2" id="customCategory" placeholder="請輸入自訂類別" style="display: none;">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="caseRisk" class="form-label">風險等級 <span class="text-danger">*</span></label>
+                                <select class="form-select" id="caseRisk" required>
+                                    <option value="">請選擇</option>
+                                    <option value="high">🔴 高風險</option>
+                                    <option value="medium">🟡 中風險</option>
+                                    <option value="low">🟢 低風險</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="caseVisitDate" class="form-label">最近訪視日</label>
+                                <input type="date" class="form-control" id="caseVisitDate">
+                                <small class="form-text text-muted">空白則自動填入今天</small>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="caseSummary" class="form-label">初評摘要 <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="caseSummary" rows="3" required></textarea>
+                        </div>
+                        <div class="text-end">
+                            <button type="reset" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> 清除
+                            </button>
+                            <button type="button" class="btn btn-warning" id="cancelEditBtn" style="display: none;">
+                                <i class="bi bi-arrow-left"></i> 取消編輯
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-plus-lg"></i> 新增個案
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- App JavaScript Modules (按照依賴順序載入) -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/validators.js"></script>
+    <script src="js/business-logic.js"></script>
+    <script src="js/data-manager.js"></script>
+    <script src="js/dom-cache.js"></script>
+    <script src="js/renderer.js"></script>
+    <script src="js/event-handlers.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
