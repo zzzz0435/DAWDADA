@@ -11,6 +11,7 @@ window.DOMCache = {
     init: function() {
         // 表格相關
         this.elements.caseTableBody = document.getElementById('caseTableBody');
+        this.elements.sortableHeaders = document.querySelectorAll('th.sortable');
 
         // 統計卡片
         this.elements.totalCasesElement = document.getElementById('totalCases');
@@ -24,8 +25,16 @@ window.DOMCache = {
         // 提示訊息
         this.elements.alertContainer = document.getElementById('alertContainer');
 
+        // Modal 相關
+        this.elements.caseModal = document.getElementById('caseModal');
+        this.elements.caseModalInstance = null; // 儲存 Bootstrap Modal 實例
+        this.elements.caseModalLabel = document.getElementById('caseModalLabel');
+        this.elements.addCaseBtn = document.getElementById('addCaseBtn');
+        this.elements.saveCaseBtn = document.getElementById('saveCaseBtn');
+
         // 表單相關
-        this.elements.addCaseForm = document.getElementById('addCaseForm');
+        this.elements.caseForm = document.getElementById('caseForm');
+        this.elements.editIndex = document.getElementById('editIndex');
         this.elements.caseName = document.getElementById('caseName');
         this.elements.caseId = document.getElementById('caseId');
         this.elements.caseCategory = document.getElementById('caseCategory');
@@ -33,7 +42,6 @@ window.DOMCache = {
         this.elements.caseRisk = document.getElementById('caseRisk');
         this.elements.caseVisitDate = document.getElementById('caseVisitDate');
         this.elements.caseSummary = document.getElementById('caseSummary');
-        this.elements.cancelEditBtn = document.getElementById('cancelEditBtn');
     },
 
     /**

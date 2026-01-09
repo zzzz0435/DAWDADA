@@ -151,6 +151,154 @@ body {
 }
 
 /* ============================================
+   表格排序樣式
+   ============================================ */
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: background-color 0.2s;
+}
+
+.sortable:hover {
+    background-color: #e9ecef;
+}
+
+.sortable i {
+    font-size: 0.75rem;
+    opacity: 0.5;
+    margin-left: 0.25rem;
+    transition: opacity 0.2s;
+}
+
+.sortable:hover i {
+    opacity: 1;
+}
+
+.sortable.sorted-asc i::before,
+.sortable.sorted-desc i::before {
+    opacity: 1;
+    color: #667eea;
+}
+
+.sortable.sorted-asc i::before {
+    content: "\f145"; /* bi-arrow-up */
+}
+
+.sortable.sorted-desc i::before {
+    content: "\f149"; /* bi-arrow-down */
+}
+
+/* ============================================
+   Modal 樣式優化
+   ============================================ */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+.modal-title i {
+    margin-right: 0.5rem;
+}
+
+/* ============================================
+   按鈕樣式優化
+   ============================================ */
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* ============================================
+   欄位拖拉樣式
+   ============================================ */
+.draggable-column {
+    cursor: move;
+    position: relative;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.draggable-column:hover {
+    background-color: #f8f9fa;
+}
+
+.draggable-column.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+    background-color: #e9ecef;
+}
+
+.draggable-column.drag-over {
+    border-left: 3px solid #667eea;
+    background-color: #e7f1ff;
+}
+
+.column-content {
+    pointer-events: none;
+}
+
+/* ============================================
+   RWD 響應式設計 - 小螢幕 (≤576px)
+   ============================================ */
+@media (max-width: 576px) {
+    /* 統計卡片圖標縮小 */
+    .stat-icon {
+        font-size: 2rem;
+    }
+
+    .stat-card h2 {
+        font-size: 1.5rem;
+    }
+
+    /* 容器 padding 減少 */
+    .table-container {
+        padding: 1rem;
+    }
+
+    .form-container {
+        padding: 1rem;
+    }
+
+    /* Modal 在小螢幕上全螢幕顯示 */
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    .modal-lg {
+        max-width: 100%;
+    }
+
+    /* 表格標題和按鈕堆疊顯示 */
+    .table-container .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+
+    .table-container .d-flex button {
+        margin-top: 1rem;
+        width: 100%;
+    }
+}
+
+/* ============================================
    RWD 響應式設計 - 平板 (≤768px)
    ============================================ */
 @media (max-width: 768px) {
@@ -163,5 +311,15 @@ body {
     .btn-sm {
         padding: 0.2rem 0.4rem;
         font-size: 0.75rem;
+    }
+
+    /* 表頭排序圖標縮小 */
+    .sortable i {
+        font-size: 0.65rem;
+    }
+
+    /* 搜尋與篩選在平板上堆疊 */
+    .table-container .row .col-md-6 {
+        margin-bottom: 0.5rem;
     }
 }

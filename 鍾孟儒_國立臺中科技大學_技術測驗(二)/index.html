@@ -68,40 +68,60 @@
             </div>
         </div>
 
-        <!-- 搜尋與篩選區 -->
-        <div class="row mb-4">
-            <div class="col-md-6 mb-3">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control" id="searchName" placeholder="搜尋姓名或病歷號...">
-                </div>
-            </div>
-            <div class="col-md-6 mb-3">
-                <select class="form-select" id="filterRisk">
-                    <option value="">🔍 全部風險等級</option>
-                    <option value="high">🔴 高風險</option>
-                    <option value="medium">🟡 中風險</option>
-                    <option value="low">🟢 低風險</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- 個案列表 -->
+        <!-- 個案列表（整合搜尋/篩選/新增按鈕） -->
         <div class="row mb-4">
             <div class="col-12">
                 <div class="table-container">
-                    <h5 class="mb-3"><i class="bi bi-list-ul"></i> 個案列表</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0"><i class="bi bi-list-ul"></i> 個案列表</h5>
+                        <button class="btn btn-primary" id="addCaseBtn" data-bs-toggle="modal" data-bs-target="#caseModal">
+                            <i class="bi bi-plus-lg"></i> 新增個案
+                        </button>
+                    </div>
+
+                    <!-- 搜尋與篩選工具列 -->
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-2">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <input type="text" class="form-control" id="searchName" placeholder="搜尋姓名或病歷號...">
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <select class="form-select" id="filterRisk">
+                                <option value="">🔍 全部風險等級</option>
+                                <option value="high">🔴 高風險</option>
+                                <option value="medium">🟡 中風險</option>
+                                <option value="low">🟢 低風險</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead class="table-light">
-                                <tr>
-                                    <th>姓名</th>
-                                    <th>病歷號</th>
-                                    <th>管理類別</th>
-                                    <th>風險等級</th>
-                                    <th>最近訪視日</th>
-                                    <th>初評摘要</th>
-                                    <th>操作</th>
+                                <tr id="tableHeaderRow">
+                                    <th class="sortable draggable-column" draggable="true" data-sort="name" data-column="name">
+                                        <span class="column-content">姓名 <i class="bi bi-arrow-down-up"></i></span>
+                                    </th>
+                                    <th class="sortable draggable-column" draggable="true" data-sort="id" data-column="id">
+                                        <span class="column-content">病歷號 <i class="bi bi-arrow-down-up"></i></span>
+                                    </th>
+                                    <th class="sortable draggable-column" draggable="true" data-sort="category" data-column="category">
+                                        <span class="column-content">管理類別 <i class="bi bi-arrow-down-up"></i></span>
+                                    </th>
+                                    <th class="sortable draggable-column" draggable="true" data-sort="risk" data-column="risk">
+                                        <span class="column-content">風險等級 <i class="bi bi-arrow-down-up"></i></span>
+                                    </th>
+                                    <th class="sortable draggable-column" draggable="true" data-sort="date" data-column="date">
+                                        <span class="column-content">最近訪視日 <i class="bi bi-arrow-down-up"></i></span>
+                                    </th>
+                                    <th class="draggable-column" draggable="true" data-column="summary">
+                                        <span class="column-content">初評摘要</span>
+                                    </th>
+                                    <th class="draggable-column" draggable="true" data-column="actions" style="width: 120px;">
+                                        <span class="column-content">操作</span>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody id="caseTableBody">
@@ -184,12 +204,22 @@
             </div>
         </div>
 
-        <!-- 新增個案表單 -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="form-container">
-                    <h5 class="mb-3"><i class="bi bi-plus-circle"></i> 新增個案</h5>
-                    <form id="addCaseForm">
+    </div>
+
+    <!-- 新增/編輯個案 Modal -->
+    <div class="modal fade" id="caseModal" tabindex="-1" aria-labelledby="caseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="caseModalLabel">
+                        <i class="bi bi-plus-circle"></i> 新增個案
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="caseForm">
+                        <input type="hidden" id="editIndex" value="-1">
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="caseName" class="form-label">姓名 <span class="text-danger">*</span></label>
@@ -200,6 +230,7 @@
                                 <input type="text" class="form-control" id="caseId" required>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <label for="caseCategory" class="form-label">管理類別 <span class="text-danger">*</span></label>
@@ -208,6 +239,10 @@
                                     <option value="慢性病管理">慢性病管理</option>
                                     <option value="傷口照護">傷口照護</option>
                                     <option value="產後照護">產後照護</option>
+                                    <option value="復健追蹤">復健追蹤</option>
+                                    <option value="心理諮商">心理諮商</option>
+                                    <option value="營養諮詢">營養諮詢</option>
+                                    <option value="用藥諮詢">用藥諮詢</option>
                                     <option value="custom">✏️ 自訂...</option>
                                 </select>
                                 <input type="text" class="form-control mt-2" id="customCategory" placeholder="請輸入自訂類別" style="display: none;">
@@ -227,22 +262,20 @@
                                 <small class="form-text text-muted">空白則自動填入今天</small>
                             </div>
                         </div>
+
                         <div class="mb-3">
                             <label for="caseSummary" class="form-label">初評摘要 <span class="text-danger">*</span></label>
-                            <textarea class="form-control" id="caseSummary" rows="3" required></textarea>
-                        </div>
-                        <div class="text-end">
-                            <button type="reset" class="btn btn-secondary">
-                                <i class="bi bi-x-circle"></i> 清除
-                            </button>
-                            <button type="button" class="btn btn-warning" id="cancelEditBtn" style="display: none;">
-                                <i class="bi bi-arrow-left"></i> 取消編輯
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-plus-lg"></i> 新增個案
-                            </button>
+                            <textarea class="form-control" id="caseSummary" rows="3" required placeholder="請輸入個案目前狀況簡述..."></textarea>
                         </div>
                     </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> 取消
+                    </button>
+                    <button type="button" class="btn btn-primary" id="saveCaseBtn">
+                        <i class="bi bi-check-lg"></i> 儲存
+                    </button>
                 </div>
             </div>
         </div>
@@ -261,6 +294,7 @@
     <script src="js/dom-cache.js"></script>
     <script src="js/renderer.js"></script>
     <script src="js/event-handlers.js"></script>
+    <script src="js/column-drag.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

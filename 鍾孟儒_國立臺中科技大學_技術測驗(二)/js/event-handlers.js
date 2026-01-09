@@ -4,6 +4,25 @@
  */
 window.EventHandlers = {
     /**
+     * 處理新增個案按鈕點擊（打開 Modal）
+     */
+    handleAddClick: function() {
+        // 重置為新增模式
+        window.State.setEditMode(false, null);
+        window.Renderer.resetForm();
+        window.Renderer.updateModalTitle('新增個案');
+    },
+
+    /**
+     * 處理 Modal 關閉事件
+     */
+    handleModalClose: function() {
+        // Modal 關閉時重置表單和狀態
+        window.State.setEditMode(false, null);
+        window.Renderer.resetForm();
+    },
+
+    /**
      * 處理管理類別選擇變更（顯示/隱藏自訂輸入框）
      * @param {Event} event - 變更事件
      */
@@ -23,11 +42,12 @@ window.EventHandlers = {
     },
 
     /**
-     * 處理表單提交
-     * @param {Event} event - 表單提交事件
+     * 處理表單提交（儲存按鈕）
+     * @param {Event} event - 點擊事件
      */
     handleFormSubmit: function(event) {
-        event.preventDefault();
+        if (event) event.preventDefault();
+
         window.Renderer.clearAllFieldErrors();
 
         // 從 DOM Cache 取得表單資料
@@ -110,7 +130,7 @@ window.EventHandlers = {
                 const updatedCase = window.DataManager.updateCase(editingCaseId, cleanedData);
                 if (updatedCase) {
                     window.App.updateView();
-                    window.Renderer.resetForm();
+                    window.Renderer.closeModal();
                     window.Renderer.showAlert('個案更新成功！', 'success');
                 } else {
                     window.Renderer.showAlert('找不到要更新的個案', 'danger');
@@ -119,7 +139,7 @@ window.EventHandlers = {
                 // 新增模式：新增個案
                 window.DataManager.addCase(cleanedData);
                 window.App.updateView();
-                window.Renderer.resetForm();
+                window.Renderer.closeModal();
                 window.Renderer.showAlert('個案新增成功！', 'success');
             }
         } catch (error) {
@@ -144,6 +164,32 @@ window.EventHandlers = {
      */
     handleFilter: function(event) {
         window.State.setRiskFilter(event.target.value);
+        window.App.updateView();
+    },
+
+    /**
+     * 處理表格排序
+     * @param {Event} event - 點擊事件
+     */
+    handleSort: function(event) {
+        const header = event.currentTarget;
+        const sortBy = header.dataset.sort;
+
+        // 取得當前排序狀態
+        const currentSortBy = window.State.getSortBy();
+        const currentDirection = window.State.getSortDirection();
+
+        // 計算新的排序方向
+        let newDirection = 'asc';
+        if (currentSortBy === sortBy) {
+            // 點擊同一欄位，切換排序方向
+            newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+        }
+
+        // 更新排序狀態
+        window.State.setSort(sortBy, newDirection);
+
+        // 更新視圖
         window.App.updateView();
     },
 
@@ -193,7 +239,7 @@ window.EventHandlers = {
     },
 
     /**
-     * 處理編輯個案
+     * 處理編輯個案（打開 Modal）
      * @param {number} caseId - 個案 ID
      */
     handleEdit: function(caseId) {
@@ -209,15 +255,10 @@ window.EventHandlers = {
         // 填充表單
         window.Renderer.fillForm(caseData);
 
-        // 更新表單 UI（標題和按鈕）
-        window.Renderer.updateFormMode();
-    },
+        // 更新 Modal 標題
+        window.Renderer.updateModalTitle('編輯個案');
 
-    /**
-     * 處理取消編輯
-     */
-    handleCancelEdit: function() {
-        // 重置表單（會自動切換回新增模式）
-        window.Renderer.resetForm();
+        // 打開 Modal
+        window.Renderer.openModal();
     }
 };

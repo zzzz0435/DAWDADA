@@ -71,7 +71,10 @@ window.State = (function() {
         searchKeyword: '',
         riskFilter: '',
         isEditMode: false,
-        editingCaseId: null
+        editingCaseId: null,
+        sortBy: null,           // 當前排序欄位
+        sortDirection: 'asc',   // 排序方向 'asc' 或 'desc'
+        columnOrder: ['name', 'id', 'category', 'risk', 'date', 'summary', 'actions']  // 欄位順序
     };
 
     return {
@@ -155,6 +158,48 @@ window.State = (function() {
          */
         isEditMode: function() {
             return _ui.isEditMode;
+        },
+
+        /**
+         * 設定排序
+         * @param {string} sortBy - 排序欄位
+         * @param {string} sortDirection - 排序方向
+         */
+        setSort: function(sortBy, sortDirection) {
+            _ui.sortBy = sortBy;
+            _ui.sortDirection = sortDirection;
+        },
+
+        /**
+         * 取得排序欄位
+         * @returns {string|null} 排序欄位
+         */
+        getSortBy: function() {
+            return _ui.sortBy;
+        },
+
+        /**
+         * 取得排序方向
+         * @returns {string} 排序方向
+         */
+        getSortDirection: function() {
+            return _ui.sortDirection;
+        },
+
+        /**
+         * 取得欄位順序
+         * @returns {Array} 欄位順序陣列
+         */
+        getColumnOrder: function() {
+            return _ui.columnOrder;
+        },
+
+        /**
+         * 設定欄位順序
+         * @param {Array} columnOrder - 新的欄位順序
+         */
+        setColumnOrder: function(columnOrder) {
+            _ui.columnOrder = columnOrder;
         }
     };
 })();

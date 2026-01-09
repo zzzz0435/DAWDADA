@@ -430,37 +430,164 @@ def run_all_tests() -> None:
     print("=" * 70)
 
 
+def input_wound_area() -> float:
+    """
+    互動式輸入傷口面積，帶即時驗證和重試機制
+
+    Returns:
+        float: 驗證通過的傷口面積（cm²）
+    """
+    while True:
+        try:
+            value = input("請輸入傷口面積 (woundArea, cm²): ").strip()
+
+            # 嘗試轉換為浮點數
+            wound_area = float(value)
+
+            # 檢查是否為有限數值
+            if not math.isfinite(wound_area):
+                print("  ❌ 錯誤：面積必須為有限數值，請重新輸入")
+                continue
+
+            # 檢查非負數
+            if wound_area < 0:
+                print("  ❌ 錯誤：面積不可為負數，請重新輸入")
+                continue
+
+            # 驗證通過
+            print(f"  ✓ 已接受：{wound_area} cm²")
+            return wound_area
+
+        except ValueError:
+            print("  ❌ 錯誤：請輸入有效的數字，請重新輸入")
+
+
+def input_pain_level() -> float:
+    """
+    互動式輸入疼痛等級，帶即時驗證和重試機制
+
+    Returns:
+        float: 驗證通過的疼痛等級（0-10）
+    """
+    while True:
+        try:
+            value = input("請輸入疼痛等級 (painLevel, 0-10): ").strip()
+
+            # 嘗試轉換為浮點數
+            pain_level = float(value)
+
+            # 檢查是否為有限數值
+            if not math.isfinite(pain_level):
+                print("  ❌ 錯誤：疼痛等級必須為有限數值，請重新輸入")
+                continue
+
+            # 檢查範圍 [0, 10]
+            if pain_level < 0 or pain_level > 10:
+                print("  ❌ 錯誤：疼痛等級必須在 0-10 範圍內，請重新輸入")
+                continue
+
+            # 驗證通過
+            print(f"  ✓ 已接受：{pain_level}")
+            return pain_level
+
+        except ValueError:
+            print("  ❌ 錯誤：請輸入有效的數字，請重新輸入")
+
+
+def input_exudate_level() -> str:
+    """
+    互動式選單輸入滲液量，提供選單選擇
+
+    Returns:
+        str: 驗證通過的滲液量（None/Light/Moderate/Heavy）
+    """
+    exudate_options = ["None", "Light", "Moderate", "Heavy"]
+
+    while True:
+        print("請選擇滲液量 (exudateLevel)：")
+        print("  1. None      (無滲液)")
+        print("  2. Light     (輕度滲液)")
+        print("  3. Moderate  (中度滲液)")
+        print("  4. Heavy     (重度滲液)")
+
+        choice = input("請輸入選項編號 (1-4): ").strip()
+
+        # 檢查是否為有效選項
+        if choice in ["1", "2", "3", "4"]:
+            selected = exudate_options[int(choice) - 1]
+            print(f"  ✓ 已選擇：{selected}")
+            return selected
+        else:
+            print("  ❌ 錯誤：請輸入 1-4 之間的數字\n")
+
+
 def run_interactive_mode() -> None:
     """
-    執行互動式輸入模式
+    執行互動式輸入模式（持續循環版本）
 
     此函數提供使用者介面，允許手動輸入評估資料並獲得即時結果。
-    適合用於單筆資料的快速評估或測試。
+    改進特點：
+    1. 每個欄位即時驗證，輸入錯誤可立即重新輸入該欄位
+    2. exudateLevel 採用選單式輸入，避免手動輸入錯誤
+    3. 支持持續評估多個案例，只有用戶主動退出才停止
     """
     # 輸出互動模式標題
     print("\n" + "=" * 70)
     print("互動式輸入模式")
     print("=" * 70)
+    print("\n提示：每個欄位都會即時驗證，輸入錯誤會要求重新輸入該欄位")
+    print("提示：輸入時可按 Ctrl+C 退出程式\n")
 
-    # 輸出參數說明
-    print("\n請輸入傷口評估資料：")
-    print("  - woundArea: 傷口面積（cm²），須為非負數")
-    print("  - painLevel: 疼痛等級（0-10），0 表示無痛，10 表示極痛")
-    print("  - exudateLevel: 滲液量，可選值為 None/Light/Moderate/Heavy")
-    print()
+    # 持續循環評估
+    case_count = 0
 
-    # 接收使用者輸入
-    wound_area_input = input("請輸入 woundArea: ").strip()
-    pain_level_input = input("請輸入 painLevel: ").strip()
-    exudate_level_input = input("請輸入 exudateLevel: ").strip()
+    while True:
+        try:
+            case_count += 1
+            print("=" * 70)
+            print(f"第 {case_count} 次評估")
+            print("=" * 70)
 
-    # 輸出分隔線
-    print("\n" + "-" * 70)
-    print("評估結果：")
-    print("-" * 70)
+            # 步驟 1: 輸入傷口面積（帶即時驗證）
+            wound_area = input_wound_area()
 
-    # 執行評估並輸出結果
-    run_single_case(wound_area_input, pain_level_input, exudate_level_input)
+            # 步驟 2: 輸入疼痛等級（帶即時驗證）
+            pain_level = input_pain_level()
+
+            # 步驟 3: 選擇滲液量（選單式）
+            exudate_level = input_exudate_level()
+
+            # 輸出分隔線
+            print("\n" + "-" * 70)
+            print("評估結果：")
+            print("-" * 70)
+
+            # 執行評估並輸出結果
+            run_single_case(wound_area, pain_level, exudate_level)
+
+            # 詢問是否繼續評估
+            print("\n" + "-" * 70)
+            while True:
+                continue_choice = input("是否繼續評估下一個案例？(Y/N): ").strip().upper()
+                if continue_choice in ["Y", "YES", "是"]:
+                    print()  # 換行準備下一輪
+                    break
+                elif continue_choice in ["N", "NO", "否"]:
+                    print("\n感謝使用傷口評估系統！")
+                    return
+                else:
+                    print("  ❌ 請輸入 Y (繼續) 或 N (退出)")
+
+        except KeyboardInterrupt:
+            # 用戶按下 Ctrl+C
+            print("\n\n感謝使用傷口評估系統！")
+            return
+
+        except Exception as error:
+            # 捕獲其他未預期的錯誤，但不中斷程式
+            print(f"\n⚠️  發生未預期的錯誤：{error}")
+            print("系統將繼續運行，您可以重新輸入資料\n")
+            continue
 
 
 # ===========================

@@ -90,6 +90,11 @@
                 // 綁定事件
                 this.bindEvents();
 
+                // 初始化欄位拖拉
+                if (window.ColumnDrag) {
+                    window.ColumnDrag.init();
+                }
+
                 // 初始渲染
                 this.updateView();
 
@@ -140,9 +145,21 @@
          */
         bindEvents: function() {
             ErrorBoundary.safeExecute(() => {
-                // 表單提交
-                window.DOMCache.get('addCaseForm').addEventListener(
-                    'submit',
+                // 初始化 Bootstrap Modal 實例
+                const modalElement = window.DOMCache.get('caseModal');
+                if (modalElement && typeof bootstrap !== 'undefined') {
+                    window.DOMCache.elements.caseModalInstance = new bootstrap.Modal(modalElement);
+                }
+
+                // 新增個案按鈕（打開 Modal）
+                window.DOMCache.get('addCaseBtn').addEventListener(
+                    'click',
+                    window.EventHandlers.handleAddClick
+                );
+
+                // 儲存按鈕（在 Modal 內）
+                window.DOMCache.get('saveCaseBtn').addEventListener(
+                    'click',
                     window.EventHandlers.handleFormSubmit
                 );
 
@@ -164,24 +181,28 @@
                     window.EventHandlers.handleCategoryChange
                 );
 
-                // 取消編輯按鈕
-                window.DOMCache.get('cancelEditBtn').addEventListener(
-                    'click',
-                    window.EventHandlers.handleCancelEdit
-                );
-
                 // 表格按鈕（使用事件委派）
                 window.DOMCache.get('caseTableBody').addEventListener(
                     'click',
                     window.EventHandlers.handleTableAction
                 );
 
+                // 表格排序（使用事件委派）
+                window.DOMCache.get('sortableHeaders').forEach(header => {
+                    header.addEventListener('click', window.EventHandlers.handleSort);
+                });
+
                 // 表單輸入時清除錯誤訊息
-                const formInputs = window.DOMCache.get('addCaseForm').querySelectorAll('input, select, textarea');
+                const formInputs = window.DOMCache.get('caseForm').querySelectorAll('input, select, textarea');
                 formInputs.forEach(input => {
                     input.addEventListener('input', function() {
                         window.Renderer.clearFieldError(this);
                     });
+                });
+
+                // Modal 關閉時重置表單
+                modalElement.addEventListener('hidden.bs.modal', function () {
+                    window.EventHandlers.handleModalClose();
                 });
             }, '事件綁定失敗');
         },
@@ -197,18 +218,26 @@
                 const uiState = window.State.getUIState();
 
                 // 2. 業務邏輯層處理：過濾資料
-                const filteredCases = window.BusinessLogic.filterCases(
+                let processedCases = window.BusinessLogic.filterCases(
                     allCases,
                     uiState.searchKeyword,
                     uiState.riskFilter
                 );
 
-                // 3. 業務邏輯層處理：計算統計
+                // 3. 業務邏輯層處理：排序資料
+                processedCases = window.BusinessLogic.sortCases(
+                    processedCases,
+                    uiState.sortBy,
+                    uiState.sortDirection
+                );
+
+                // 4. 業務邏輯層處理：計算統計
                 const statistics = window.BusinessLogic.calculateStatistics(allCases);
 
-                // 4. 渲染層更新：只負責 DOM 更新
-                window.Renderer.renderTable(filteredCases);
+                // 5. 渲染層更新：只負責 DOM 更新
+                window.Renderer.renderTable(processedCases);
                 window.Renderer.renderStatistics(statistics);
+                window.Renderer.updateSortIndicators(uiState.sortBy, uiState.sortDirection);
             }, '更新視圖失敗');
         }
     };

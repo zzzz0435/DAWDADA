@@ -93,5 +93,59 @@ window.BusinessLogic = {
         const daysDiff = Math.floor((today - visitDate) / (1000 * 60 * 60 * 24));
 
         return daysDiff > window.CONFIG.FOLLOW_UP_THRESHOLD_DAYS;
+    },
+
+    /**
+     * 排序個案資料
+     * @param {Array} cases - 個案陣列
+     * @param {string} sortBy - 排序欄位 (name/id/category/risk/date)
+     * @param {string} direction - 排序方向 (asc/desc)
+     * @returns {Array} 排序後的個案陣列
+     */
+    sortCases: function(cases, sortBy, direction) {
+        if (!sortBy) return cases;
+
+        const sorted = [...cases].sort((a, b) => {
+            let valueA, valueB;
+
+            switch (sortBy) {
+                case 'name':
+                    valueA = a.patientName;
+                    valueB = b.patientName;
+                    break;
+                case 'id':
+                    valueA = a.medicalRecordNumber;
+                    valueB = b.medicalRecordNumber;
+                    break;
+                case 'category':
+                    valueA = a.managementCategory;
+                    valueB = b.managementCategory;
+                    break;
+                case 'risk':
+                    // 風險等級排序：high > medium > low
+                    const riskOrder = { 'high': 3, 'medium': 2, 'low': 1 };
+                    valueA = riskOrder[a.riskLevel] || 0;
+                    valueB = riskOrder[b.riskLevel] || 0;
+                    break;
+                case 'date':
+                    valueA = new Date(a.lastVisitDate);
+                    valueB = new Date(b.lastVisitDate);
+                    break;
+                default:
+                    return 0;
+            }
+
+            // 比較邏輯
+            let comparison = 0;
+            if (valueA > valueB) {
+                comparison = 1;
+            } else if (valueA < valueB) {
+                comparison = -1;
+            }
+
+            return direction === 'asc' ? comparison : -comparison;
+        });
+
+        return sorted;
     }
 };

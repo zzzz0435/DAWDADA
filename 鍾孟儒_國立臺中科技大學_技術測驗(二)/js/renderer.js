@@ -154,7 +154,7 @@ window.Renderer = {
      * 清除所有表單錯誤訊息
      */
     clearAllFieldErrors: function() {
-        const invalidInputs = window.DOMCache.get('addCaseForm').querySelectorAll('.is-invalid');
+        const invalidInputs = window.DOMCache.get('caseForm').querySelectorAll('.is-invalid');
         invalidInputs.forEach(input => this.clearFieldError(input));
     },
 
@@ -162,7 +162,7 @@ window.Renderer = {
      * 重置表單
      */
     resetForm: function() {
-        window.DOMCache.get('addCaseForm').reset();
+        window.DOMCache.get('caseForm').reset();
         this.clearAllFieldErrors();
 
         // 隱藏自訂類別輸入框
@@ -172,7 +172,56 @@ window.Renderer = {
 
         // 重置為新增模式
         window.State.setEditMode(false, null);
-        this.updateFormMode();
+    },
+
+    /**
+     * 打開 Modal
+     */
+    openModal: function() {
+        const modalInstance = window.DOMCache.elements.caseModalInstance;
+        if (modalInstance) {
+            modalInstance.show();
+        }
+    },
+
+    /**
+     * 關閉 Modal
+     */
+    closeModal: function() {
+        const modalInstance = window.DOMCache.elements.caseModalInstance;
+        if (modalInstance) {
+            modalInstance.hide();
+        }
+    },
+
+    /**
+     * 更新 Modal 標題
+     * @param {string} title - 標題文字
+     */
+    updateModalTitle: function(title) {
+        const modalLabel = window.DOMCache.get('caseModalLabel');
+        const icon = title.includes('編輯') ? 'bi-pencil-square' : 'bi-plus-circle';
+        modalLabel.innerHTML = `<i class="bi ${icon}"></i> ${title}`;
+    },
+
+    /**
+     * 更新排序指示器
+     * @param {string} sortBy - 排序欄位
+     * @param {string} sortDirection - 排序方向
+     */
+    updateSortIndicators: function(sortBy, sortDirection) {
+        const headers = window.DOMCache.get('sortableHeaders');
+        headers.forEach(header => {
+            const headerSortBy = header.dataset.sort;
+
+            // 移除所有排序類別
+            header.classList.remove('sorted-asc', 'sorted-desc');
+
+            // 添加當前排序的類別
+            if (headerSortBy === sortBy) {
+                header.classList.add(sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc');
+            }
+        });
     },
 
     /**
@@ -204,30 +253,5 @@ window.Renderer = {
 
         // 清除錯誤訊息
         this.clearAllFieldErrors();
-    },
-
-    /**
-     * 更新表單模式（新增/編輯）
-     */
-    updateFormMode: function() {
-        const formTitle = document.querySelector('.form-container h5');
-        const submitButton = document.querySelector('.form-container button[type="submit"]');
-        const cancelEditBtn = window.DOMCache.get('cancelEditBtn');
-        const isEditMode = window.State.isEditMode();
-
-        if (isEditMode) {
-            formTitle.innerHTML = '<i class="bi bi-pencil-square"></i> 編輯個案';
-            submitButton.innerHTML = '<i class="bi bi-check-lg"></i> 更新個案';
-            submitButton.className = 'btn btn-success';
-            cancelEditBtn.style.display = 'inline-block';
-
-            // 滾動到表單
-            document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
-        } else {
-            formTitle.innerHTML = '<i class="bi bi-plus-circle"></i> 新增個案';
-            submitButton.innerHTML = '<i class="bi bi-plus-lg"></i> 新增個案';
-            submitButton.className = 'btn btn-primary';
-            cancelEditBtn.style.display = 'none';
-        }
     }
 };
